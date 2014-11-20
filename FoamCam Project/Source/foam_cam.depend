@@ -1,0 +1,129 @@
+# depslib dependency file v1.0
+1410530604 source:e:\foamcam project\main.cpp
+	<iostream>
+	<fstream>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<string>
+	<cmath>
+	"img_proc.h"
+	"opdata.h"
+
+1404753173 e:\foamcam project\main.h
+	<iostream>
+	<fstream>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<string>
+
+1408766375 e:\foamcam project\functions.hpp
+
+1404914730 e:\foamcam project\maskpoints.hpp
+
+1408761663 source:e:\foamcam project\whitecap.cpp
+	"whitecap.h"
+
+1408761557 e:\foamcam project\whitecap.h
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+
+1408765263 source:f:\foamcam project\whitecap.cpp
+	"whitecap.h"
+
+1408765157 f:\foamcam project\whitecap.h
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+
+1411171696 source:f:\foamcam project\main.cpp
+	<iostream>
+	<fstream>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<opencv2/calib3d/calib3d.hpp>
+	<string>
+	<cmath>
+	"img_proc.h"
+	"opdata.h"
+
+1410279849 f:\foamcam project\functions.hpp
+	"opdata.h"
+
+1410500779 f:\foamcam project\opdata.h
+	<fstream>
+	<iostream>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+
+1410532245 source:f:\foamcam project\opdata.cpp
+	"opdata.h"
+	<windows.h>
+	<sys/stat.h>
+	<sys/types.h>
+
+1411173956 f:\foamcam project\img_proc.h
+	"opdata.h"
+
+1410528645 source:e:\foamcam project\opdata.cpp
+	"opdata.h"
+	<windows.h>
+	<sys/stat.h>
+	<sys/types.h>
+
+1410497179 e:\foamcam project\opdata.h
+	<fstream>
+	<iostream>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+
+1410531454 e:\foamcam project\img_proc.h
+	"opdata.h"
+
+1414763827 source:d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\main.cpp
+	<iostream>
+	<fstream>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<opencv2/calib3d/calib3d.hpp>
+	<string>
+	<cmath>
+	"img_proc.h"
+	"opdata.h"
+
+1411170356 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\img_proc.h
+	"opdata.h"
+
+1415975194 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata.h
+	<fstream>
+	<iostream>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+
+1415975624 source:d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata.cpp
+	"opdata.h"
+	"opdata_win.h"
+	"opdata_unix.h"
+
+1408761663 source:d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\whitecap.cpp
+	"whitecap.h"
+
+1408761557 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\whitecap.h
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+
+1415975288 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata_win.h
+	<windows.h>
+
+1415975631 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata_unix.h
+	<sys/stat.h>
+	<sys/types.h>
+
