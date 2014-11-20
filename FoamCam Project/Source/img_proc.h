@@ -243,8 +243,9 @@ Mat imreadRaw(string src_path)
     src_file.open(src_path.c_str(), ios::in | ios::binary);
     if(!src_file.is_open())
     {
-        cout << "Could not open source file." << endl;
-        return image;
+        cerr << "Could not open source file." << endl;
+        Mat err;
+        return err;
     }
 
     int i,j;
@@ -500,10 +501,11 @@ void extractWhitecaps(Mat& src, OpData& data)
         if((peak >= peak_avg*0.80) && (peak > peak_min)) // only keep above average intensity contours
         {
             if(checkContourCorners(&contours[i]))
-                cout << "Corner found at i=" << i << endl;
+                //cout << "Corner found at i=" << i << endl;
+                ;
             else
             {
-                cout << "No corner found at i=" << i << endl;
+               // cout << "No corner found at i=" << i << endl;
                 contours_temp.push_back(contours[i]);
             }
         }
@@ -779,7 +781,6 @@ void combineSubimgs(vector<Mat>* src, Mat& op, int n, int m)
 
 void optimalThreshSubimgs(Mat& src, Mat& dst, int min_fg_bg_diff, int n, int m)
 {
-    cout << "New function call, n=" << n << ", m=" << m << endl;
     vector<Mat> subimgs;
     vector<int> subimgs_to_remove;
     divideIntoSubimgs(src, &subimgs, n, m);
@@ -880,10 +881,7 @@ void optimalThreshSubimgs(Mat& src, Mat& dst, int min_fg_bg_diff, int n, int m)
     }
 
     for(int i=0; i<subimgs_to_remove.size(); i++)
-    {
-        cout << "removing subimg " << subimgs_to_remove[i] << endl;
         subimgs[subimgs_to_remove[i]] = Scalar(BLACK);
-    }
 
     combineSubimgs(&subimgs, dst, n, m);
     return;

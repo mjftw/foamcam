@@ -16,7 +16,7 @@ OpData::OpData(string new_src_img_path, bool simple_save)
     src_img = new Mat;
     simple_output = simple_save;
 
-    addField("date_modified", 0);
+    addField("date_modified", getTimestamp());
     addField("src_no", getImgName());
 }
 OpData::OpData(string new_src_img_path, Mat& new_src_img, bool simple_save)
@@ -28,7 +28,7 @@ OpData::OpData(string new_src_img_path, Mat& new_src_img, bool simple_save)
     *src_img = new_src_img.clone();
     simple_output = simple_save;
 
-    addField("date_modified", 0);
+    addField("date_modified", getTimestamp());
     addField("src_no", getImgName());
 }
 
@@ -185,6 +185,25 @@ bool OpData::saveImg(string dest_dir, string format)
             imwrite(dest_dir + "/" + img_name + format, *src_img);
     }
 
+    return true;
+}
+
+bool OpData::saveSimple(string filename)
+{
+    ofstream opstream(filename.c_str(), ios::out | ios::app);
+    if(!opstream.is_open())
+        return false;
+
+    for(int i=0; i < fields->size(); i++)
+    {
+        opstream << fields->at(i)->second;
+        if(i < fields->size()-1)
+            opstream << ',';
+    }
+    opstream << endl;
+
+
+    opstream.close();
     return true;
 }
 

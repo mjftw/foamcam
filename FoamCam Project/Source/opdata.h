@@ -24,6 +24,7 @@ class OpData
         void addField(string field, float value);
 
         bool save(string dest_dir = "", string format = DEFAULT_OP_IMG_EXT);
+        bool saveSimple(string filename = "default_output.csv");
         bool saveImg(string dest_dir = "", string format = DEFAULT_OP_IMG_EXT);
 
     private:
@@ -39,7 +40,7 @@ class OpData
         bool simple_output; //saves only the .dat file in the source image directory, does not save data images.
 
         bool makeDir(string path);  //different function used for unix and windows
-        int getTimestamp();
+        string getTimestamp();
 };
 
 #endif // OPDATA_H

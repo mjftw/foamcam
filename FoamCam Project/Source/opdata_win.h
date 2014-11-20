@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <time.h>
 
 bool OpData::makeDir(string path)
 {
@@ -29,20 +30,28 @@ bool OpData::makeDir(string path)
     return true;
 }
 
-int OpData::getTimestamp() //UNDER CONSTRUCTION http://stackoverflow.com/questions/1938939/get-file-last-modify-time-and-compare
+string OpData::getTimestamp() //UNDER CONSTRUCTION http://stackoverflow.com/questions/1938939/get-file-last-modify-time-and-compare
 {
-    int timestamp = 0;
+    stringstream timestamp;
 
-    FILETIME creationTime,
-         lpLastAccessTime,
-         lastWriteTime;
+    WIN32_FILE_ATTRIBUTE_DATA wfad;
+    SYSTEMTIME st;
+    struct tm temp;
 
-    bool err = GetFileTime( h, &creationTime, &lpLastAccessTime, &lastWriteTime );
-    if( !err )
-    {
-        //error code
-    }
+    GetFileAttributesEx(src_img_path->c_str(), GetFileExInfoStandard, &wfad);
+    FileTimeToSystemTime(&wfad.ftCreationTime, &st);
 
+    temp.tm_sec = st.wSecond;
+	temp.tm_min = st.wMinute;
+	temp.tm_hour = st.wHour + 2;
+	temp.tm_mday = st.wDay;
+	temp.tm_mon = st.wMonth - 1;
+	temp.tm_year = st.wYear - 1900;
+	temp.tm_isdst = -1;
 
-    return timestamp;
+    time_t time = mktime(&temp);
+
+    timestamp << time;
+
+    return timestamp.str();
 }

@@ -85,7 +85,7 @@
 1410531454 e:\foamcam project\img_proc.h
 	"opdata.h"
 
-1414763827 source:d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\main.cpp
+1416517171 source:d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\main.cpp
 	<iostream>
 	<fstream>
 	<opencv2/core/core.hpp>
@@ -97,17 +97,17 @@
 	"img_proc.h"
 	"opdata.h"
 
-1411170356 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\img_proc.h
+1416516854 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\img_proc.h
 	"opdata.h"
 
-1415975194 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata.h
+1416516571 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata.h
 	<fstream>
 	<iostream>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1415975624 source:d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata.cpp
+1416511483 source:d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata.cpp
 	"opdata.h"
 	"opdata_win.h"
 	"opdata_unix.h"
@@ -120,10 +120,14 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1415975288 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata_win.h
+1416513377 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata_win.h
 	<windows.h>
+	<time.h>
 
-1415975631 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata_unix.h
+1415975851 d:\libaries\uni work\year 3\foamcam_project\foamcam project\source\opdata_unix.h
 	<sys/stat.h>
 	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+	<time.h>
 
