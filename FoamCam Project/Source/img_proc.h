@@ -382,8 +382,14 @@ int removeBarrelDist(Mat& src)
     initUndistortRectifyMap(cameraMatrix, distCoeffs, Mat(),
             getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, src.size(), 1, src.size(), 0),
             src.size(), CV_16SC2, map1, map2);
+    remap(src, src, map1, map2, INTER_LINEAR);
 
-            remap(src, src, map1, map2, INTER_LINEAR);
+    Mat temp1;
+    float z = 7; //zoom factor
+    resize(src, temp1, Point(0,0), z, z);
+    int offset = z*50;
+    Mat temp2(temp1(Rect(Point(temp1.rows*(0.5 - 1/z) - offset, temp1.cols*(0.5 - 1/z) - offset), Point(temp1.rows*(0.5 + 1/z) - offset, temp1.cols*(0.5 + 1/z) - offset))));
+    resize(temp2, src, Size(0,0), 0.5, 0.5);
 
     return 0;
 }
@@ -396,6 +402,7 @@ void centreImage(Mat& src)
     Point outPt2 = Point(NROWS/2 + BORDER_X_RADIUS, NCOLS/2 + BORDER_Y_RADIUS);
 
     Mat temp1(src(Rect(roiPt1, roiPt2)));
+
     Mat temp2(NROWS, NCOLS, CV_8UC1, Scalar::all(BLACK));
 
     temp1.copyTo(temp2(Rect(outPt1, outPt2)));

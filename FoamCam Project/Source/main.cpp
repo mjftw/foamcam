@@ -18,8 +18,8 @@ bool process_img(string img_path, string op_path);
 
 int main(int argc, char *argv[])
 {
-    string src_path = "E:/FoamCam Project/data/2013-11-02_12-01-24/000004/00004113.img";
-    //string src_path;// = "ip_imgs.xml";
+    //string src_path = "E:/FoamCam Project/data/2013-11-02_12-01-24/000004/00004113.img";
+    string src_path = "ip_imgs.xml";
     string op_path;// = "output_data.csv";
     bool output_mode = false; //true for simple output, false for advanced output (file structure creation and image output)
 
@@ -96,7 +96,6 @@ int main(int argc, char *argv[])
 bool process_img(string img_path, string op_path)
 {
     Mat src = imreadRaw(img_path);
-
     if(!src.data)
     {
         cerr << "Invalid source image " << img_path << endl;
@@ -107,11 +106,12 @@ bool process_img(string img_path, string op_path)
 
     showImg("Source", src);
 
+    maskFrame(src);
     removeBarrelDist(src);
 
     showImg("Source - Undistorted", src);
 
-    //extractWhitecaps(src, data);
+    extractWhitecaps(src, data);
 
     cout << "data writing: ";
     if(data.saveSimple(op_path))
