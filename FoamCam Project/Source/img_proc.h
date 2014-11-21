@@ -10,15 +10,23 @@ using namespace cv;
 #define NCOLS 2048
 
 #define SUPPORTED_IMG_FORMATS ".bmp .dib .jpeg .jpg .jpe .jp2 .png .pbm .pgm .ppm .sr .ras .tiff .tif"
+#define CAM_PARAM_XML "D:/Libaries/Uni Work/Year 3/foamcam_project/FoamCam Project/calibration/camera_calibration/calibration_data.xml"
+
+#define BORDER_CENT Point(1035,1115) //ellipse parameters found via trial and error
+#define BORDER_X_RADIUS 835
+#define BORDER_Y_RADIUS 775
 
 Mat imreadRaw(string src_path);
 void convertRaw(string src_path, string op_path, string format);
 
 void maskObjects(Mat& src);
-
+void maskBorder(Mat& src);
+void maskFrame(Mat& src);
+void maskRope(Mat& src);
 void extractWhitecaps(Mat& src, OpData& data);
-void removeBarrelDist(Mat& src);
+int removeBarrelDist(Mat& src);
 void findSkeleton(Mat& src, Mat& dst); // ------------UNUSED------------
+void centreImage(Mat& src);
 
 void divideIntoSubimgs(Mat& src, vector<Mat>* op, int n, int m);
 void combineSubimgs(vector<Mat>* src, Mat& op, int n, int m);
@@ -352,61 +360,82 @@ void labelPolyPoints(Mat& img, Point* pts, int npts, const Scalar& color, double
     return;
 }
 
-void removeBarrelDist(Mat& src)
-{   //Will use http://docs.opencv.org/doc/tutorials/calib3d/camera_calibration/camera_calibration.html
-    Mat corrected(NROWS, NCOLS, CV_8UC1, Scalar::all(WHITE));
+int removeBarrelDist(Mat& src)
+{
 
-    //only find the distortion coefficients if there isn't already an xml file containing them.
+    Mat cameraMatrix, distCoeffs, map1, map2;
 
-    vector<Mat> cb_images; //chessboard images
-    int n_imgs = 1; //number of calibration images used
-    Size pattern_size = Size(8,6); //number of corners to look for in chessboard
-    //calibration images are named cal0, cal1, cal2, ...
-    string cal_imgs_path = "F:/FoamCam Project/calibration";
-    bool found_chessboard = false;
-    vector<Point2f> corners;
-    string i_string;
-
-    for(int i=0; i<n_imgs; )
+    FileStorage fs;
+    fs.open(CAM_PARAM_XML, FileStorage::READ);
+    if (!fs.isOpened())
     {
-        cb_images.push_back(imread(cal_imgs_path + "/cal" + static_cast<ostringstream*>(&(ostringstream() << i))->str() + ".tif"));
-        found_chessboard = findChessboardCorners(cb_images[cb_images.size() -1], pattern_size, corners, CALIB_CB_ADAPTIVE_THRESH+CALIB_CB_NORMALIZE_IMAGE);
-        if(found_chessboard)
-        {
-            cout << "Cal" << i << ".tif: Chessboard found." << endl;
-            drawChessboardCorners(cb_images[cb_images.size() -1], pattern_size, corners, found_chessboard);
-            showImg("chessboard corners", cb_images[cb_images.size() -1]);
-        }
+        cerr << "Failed to open distortion coefficients xml file" << endl;
+        return -1;
     }
+
+    fs["Camera_Matrix"] >> cameraMatrix;
+    fs["Distortion_Coefficients"] >> distCoeffs;
+
+    centreImage(src);
+    //showImg("Source - Centred", src);
+
+    initUndistortRectifyMap(cameraMatrix, distCoeffs, Mat(),
+            getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, src.size(), 1, src.size(), 0),
+            src.size(), CV_16SC2, map1, map2);
+
+            remap(src, src, map1, map2, INTER_LINEAR);
+
+    return 0;
+}
+
+void centreImage(Mat& src)
+{
+    Point roiPt1 = Point(BORDER_CENT.x - BORDER_X_RADIUS, BORDER_CENT.y - BORDER_Y_RADIUS);
+    Point roiPt2 = Point(BORDER_CENT.x + BORDER_X_RADIUS, BORDER_CENT.y + BORDER_Y_RADIUS);
+    Point outPt1 = Point(NROWS/2 - BORDER_X_RADIUS, NCOLS/2 - BORDER_Y_RADIUS);
+    Point outPt2 = Point(NROWS/2 + BORDER_X_RADIUS, NCOLS/2 + BORDER_Y_RADIUS);
+
+    Mat temp1(src(Rect(roiPt1, roiPt2)));
+    Mat temp2(NROWS, NCOLS, CV_8UC1, Scalar::all(BLACK));
+
+    temp1.copyTo(temp2(Rect(outPt1, outPt2)));
+    src = temp2.clone();
 
     return;
 }
 
 void maskObjects(Mat& src)
 {
-    Mat mask(NROWS, NCOLS, CV_8UC1, Scalar::all(BLACK));
-    Mat rope_mask(NROWS, NCOLS, CV_8UC1, Scalar::all(WHITE));
+    maskBorder(src);
+    maskFrame(src);
+    maskRope(src);
+    return;
+}
+void maskBorder(Mat& src)
+{
     Mat border_mask(NROWS, NCOLS, CV_8UC1, Scalar::all(BLACK));
-    Mat frame_mask(NROWS, NCOLS, CV_8UC1, Scalar::all(WHITE));
-
-// ---------- MASK BORDER ----------
-    Point cent = Point(1035, 1115); //ellipse parameters found via trial and error
-    int radius_x = 835;
-    int radius_y = 775;
     vector<Point> ellipse_poly_vec;
-    ellipse2Poly(cent, Size(radius_x, radius_y), 0, 0, 360, 1, ellipse_poly_vec);
+    ellipse2Poly(BORDER_CENT, Size(BORDER_X_RADIUS, BORDER_Y_RADIUS), 0, 0, 360, 1, ellipse_poly_vec);
     Point*  mask_poly = &ellipse_poly_vec[0];
     fillConvexPoly(border_mask, mask_poly, 360, Scalar::all(WHITE), 8, 0);
     src &= border_mask;
+    return;
+}
 
-// ---------- MASK FRAME ----------
+void maskFrame(Mat& src)
+{
+    Mat frame_mask(NROWS, NCOLS, CV_8UC1, Scalar::all(WHITE));
     vector<Point> frame_poly_vec(FRAME_POLY, FRAME_POLY + sizeof(FRAME_POLY) / sizeof(FRAME_POLY[0])); //convert array to vector
     vector<vector<Point> > frame_contours;
     frame_contours.push_back(frame_poly_vec);
     drawContours(frame_mask, frame_contours, -1, Scalar::all(BLACK), CV_FILLED, 8, noArray(), INT_MAX, Point(0,0) );
     src &= frame_mask;
+    return;
+}
 
-// ---------- MASK ROPE -----------
+void maskRope(Mat& src)
+{
+    Mat rope_mask(NROWS, NCOLS, CV_8UC1, Scalar::all(WHITE));
     vector<Point> rope_poly_vec(ROPE_POLY, ROPE_POLY + sizeof(ROPE_POLY) / sizeof(ROPE_POLY[0])); //convert array to vector
     vector<vector<Point> > rope_contours;
     rope_contours.push_back(rope_poly_vec);
@@ -414,6 +443,7 @@ void maskObjects(Mat& src)
     src &= rope_mask;
     return;
 }
+
 
 void extractWhitecaps(Mat& src, OpData& data)
 {

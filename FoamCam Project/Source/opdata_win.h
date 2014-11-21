@@ -1,3 +1,7 @@
+/*
+    File structure operations for windows machines.
+*/
+
 #include <windows.h>
 #include <time.h>
 
@@ -30,7 +34,7 @@ bool OpData::makeDir(string path)
     return true;
 }
 
-string OpData::getTimestamp() //UNDER CONSTRUCTION http://stackoverflow.com/questions/1938939/get-file-last-modify-time-and-compare
+string OpData::getTimestamp()
 {
     stringstream timestamp;
 

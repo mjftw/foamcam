@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<opencv_storage>
+	<! Input path can either be the path of a single .img file, or a .xml image list !>
+	<Input_Path> "D:/Libaries/Uni Work/Year 3/foamcam_project/FoamCam Project/Source/ip_imgs.xml" </Image_List>
+	<Output_Directory> "D:/Libaries/Uni Work/Year 3/foamcam_project/FoamCam Project/Source/Output" </Output_Directory> 
+	<Output_Filename> "output_data.csv" </Output_Filename>
+	<Output_Image_Format> ".jpg" <Output_Image_Format>
+</opencv_storage>
