@@ -43,11 +43,11 @@ string OpData::getTimestamp()
     struct tm temp;
 
     GetFileAttributesEx(src_img_path->c_str(), GetFileExInfoStandard, &wfad);
-    FileTimeToSystemTime(&wfad.ftCreationTime, &st);
+    FileTimeToSystemTime(&wfad.ftLastWriteTime, &st);
 
     temp.tm_sec = st.wSecond;
 	temp.tm_min = st.wMinute;
-	temp.tm_hour = st.wHour + 2;
+	temp.tm_hour = st.wHour;
 	temp.tm_mday = st.wDay;
 	temp.tm_mon = st.wMonth - 1;
 	temp.tm_year = st.wYear - 1900;
@@ -56,6 +56,13 @@ string OpData::getTimestamp()
     time_t time = mktime(&temp);
 
     timestamp << time;
+    if(st.wMilliseconds < 10)
+        timestamp << ".00";
+    else if(st.wMilliseconds < 100)
+        timestamp << ".0";
+    else
+        timestamp << ".";
 
+    timestamp << st.wMilliseconds;
     return timestamp.str();
 }

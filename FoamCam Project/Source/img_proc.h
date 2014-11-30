@@ -293,7 +293,7 @@ void showImg(string window_name, Mat& img)
 }
 
 bool testIfProcessable(Mat& img)
-{///*TODO* must correct fisheye distortion in order to work on this section properly
+{
     bool Proc = true;
 
 // -------- FIND HORIZON ----------
@@ -461,7 +461,7 @@ void extractWhitecaps(Mat& src, OpData& data)
 
     medianBlur(src, temp, 15);
 
-    int n_subimgs = 16; //must be a power of 2, higher values favour smaller whitecaps, lower values larger whitecaps
+    int n_subimgs = 32; //must be a power of 2, higher values favour smaller whitecaps, lower values larger whitecaps
     optimalThreshSubimgs(temp, temp, 40, n_subimgs, n_subimgs);
 
     showImg("adaptive_thresh_subimgs", temp);
