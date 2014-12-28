@@ -10,6 +10,33 @@
 #include "img_proc.h"
 #include "opdata.h"
 
+#ifdef _WIN32
+    #include <Windows.h>
+    //code copied from http://stackoverflow.com/questions/20860822/finding-the-file-path-of-all-files-in-a-folder
+    // folder must end with "/", e.g. "D:/images/"
+    vector<string> get_all_files_full_path_within_folder(string folder)
+    {
+        vector<string> names;
+        char search_path[200];
+        sprintf(search_path, "%s*.*", folder.c_str());
+        WIN32_FIND_DATA fd;
+        HANDLE hFind = ::FindFirstFile(search_path, &fd);
+        if(hFind != INVALID_HANDLE_VALUE)
+        {
+            do
+            {
+                // read all (real) files in current folder, delete '!' read other 2 default folder . and ..
+                if(! (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+                {
+                    names.push_back(folder+fd.cFileName);
+                }
+            }while(::FindNextFile(hFind, &fd));
+            ::FindClose(hFind);
+        }
+        return names;
+    }
+#endif // _WIN32
+
 void showHelp();
 bool process_img(string img_path, string op_path);
 
@@ -51,16 +78,23 @@ int main(int argc, char *argv[])
             return 0;
         }
     }
-
+    if(src_path == "")
+    {
+        cout << "No source path given, exiting." << endl;
+        return 0;
+    }
     size_t ext = src_path.find(".xml");
     bool foundxml = (ext!=string::npos);
     ext = src_path.find(".img");
     bool foundimg = (ext!=string::npos);
+    bool founddir = (src_path[src_path.length()-1] == '/');
 
     if(foundxml)
         cout << "Getting images from xml image list." << endl;
     else if(foundimg)
         cout << "Loading image from .img file." << endl;
+    else if(founddir)
+        cout << "Searching directory for images." << endl;
     else
     {
         cerr << "Invalid source. Exiting program." << endl;
@@ -92,6 +126,20 @@ int main(int argc, char *argv[])
         for (; it != it_end; ++it)
         {
             process_img((string)*it, op_path);
+        }
+    }
+    else if(founddir)
+    {
+        vector<string> files = get_all_files_full_path_within_folder(src_path);
+
+        for(int i=0; i<files.size(); i++)
+        {
+            size_t ext = files[i].find(".img");
+            if(ext!=string::npos)
+            {
+                cout << "Processing image: " << files[i] << endl;
+                process_img(files[i], op_path);
+            }
         }
     }
     return 0;

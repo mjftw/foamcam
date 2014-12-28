@@ -189,23 +189,3 @@ bool OpData::save(string dest_dir, string format)
 
     return true;
 }
-
-
-bool OpData::saveSimple(string filename)
-{
-    ofstream opstream(filename.c_str(), ios::out | ios::app);
-    if(!opstream.is_open())
-        return false;
-
-    for(int i=0; i < fields->size(); i++)
-    {
-        opstream << fields->at(i)->second;
-        if(i < fields->size()-1)
-            opstream << ',';
-    }
-    opstream << endl;
-
-    opstream.close();
-    return true;
-}
-

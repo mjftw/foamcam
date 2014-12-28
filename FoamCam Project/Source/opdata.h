@@ -24,7 +24,6 @@ class OpData
         void addField(string field, float value);
 
         bool save(string dest_dir = "", string format = DEFAULT_OP_IMG_EXT);
-        bool saveSimple(string filename = "default_output.csv");
         bool saveImg(string dest_dir = "", string format = DEFAULT_OP_IMG_EXT);
 
         string getImgName();
