@@ -16,10 +16,12 @@ bool process_img(string img_path, string op_path);
 ///*TODO* Add Boost Filesystem in order to get file timestamps (cross platform solution)
 ///*TODO* Make false whitecap detection less frequent (subimg corner type artefacts)
 
+static bool ONLY_UNDISTORT = false;
+
 int main(int argc, char *argv[])
 {
     //string src_path = "E:/FoamCam Project/data/2013-11-02_12-01-24/000004/00004113.img";
-    string src_path = "ip_imgs.xml";
+    string src_path;// = "ip_imgs.xml";
     string op_path;// = "output_data.csv";
     bool output_mode = false; //true for simple output, false for advanced output (file structure creation and image output)
 
@@ -29,10 +31,12 @@ int main(int argc, char *argv[])
             src_path = argv[i+1];
         else if((!strcmp(argv[i], "-d")) && (i+1 <= argc))
             op_path = argv[i+1];
-        else if((!strcmp(argv[i], "-m")) && (i+1 <= argc)) ///*TODO* add exception handling for invalid input
-            output_mode = argv[i+1];
+        /*else if((!strcmp(argv[i], "-m")) && (i+1 <= argc)) ///*TODO* add exception handling for invalid input
+            output_mode = argv[i+1];*/
         else if((!strcmp(argv[i], "-v")) && (i+1 <= argc))
-            set_output_mode(atoi(argv[i+1]));
+            set_output_mode(true);
+        else if((!strcmp(argv[i], "-u")) && (i+1 <= argc))
+            ONLY_UNDISTORT = true;
         /*else if((!strcmp(argv[i], "-c")) && (i+1 <= argc))
         {
             if(src_path.empty() || op_path.empty())
@@ -103,21 +107,25 @@ bool process_img(string img_path, string op_path)
     }
 
     OpData data(img_path, src, false);
-
+    data.addImg(data.getImgName(), src);
     showImg("Source", src);
 
-    maskFrame(src);
+    if(!ONLY_UNDISTORT)
+        maskFrame(src);
+
     removeBarrelDist(src);
+    data.addImg(data.getImgName() + "_undistorted", src);
 
     showImg("Source - Undistorted", src);
 
-    extractWhitecaps(src, data);
+    if(!ONLY_UNDISTORT)
+        extractWhitecaps(src, data);
 
     cout << "data writing: ";
-    if(data.saveSimple(op_path))
-        cout << "success" << endl;
-    else
-        cout << "fail" << endl;
+        if(data.save(op_path))
+            cout << "success" << endl;
+        else
+            cout << "fail" << endl;
     if(SHOW_DEBUG_IMGS)
         waitKey(0);// wait for a keystroke in the window
 
@@ -127,13 +135,15 @@ bool process_img(string img_path, string op_path)
 void showHelp()
 {
     cout << endl << "Optional command line arguments:" << endl;
-    cout << "-s [src] -d [dest] -c [format]" << endl;
-    cout << "-s: .img source file" << endl;
+    cout << "-s [src] -d [dest] -v -u" << endl;
+    cout << "-s: .img source file or .xml image list" << endl;
     cout << "-d: data output destination directory" << endl;
-    cout << "-c: convert .img file to specified format" << endl;
-    cout << "-m: output mode, 0 = advanced, 1 = simple (.dat file only, in source directory)" << endl;
-    cout << " Overrides other arguments" << endl;
-    cout << "-v: view debug images?, 0/1" << endl;
+   // cout << "-c: convert .img file to specified format" << endl;
+    //cout << "-m: output mode, 0 = advanced, 1 = simple (.dat file only, in source directory)" << endl;
+   // cout << " Overrides other arguments" << endl;
+    cout << "-v: view debug images" << endl;
+    cout << "-u: only undistort image" << endl;
+
     cout << " Formats: " << SUPPORTED_IMG_FORMATS << endl;
     cout << "-?: help" << endl;
 }

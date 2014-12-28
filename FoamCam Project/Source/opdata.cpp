@@ -100,7 +100,7 @@ string OpData::getImgDir()
     return img_dir;
 }
 
-bool OpData::save(string dest_dir, string format)
+/*bool OpData::save(string dest_dir, string format)
 {
     string img_name = getImgName();
     string img_dir = getImgDir();
@@ -163,30 +163,33 @@ bool OpData::save(string dest_dir, string format)
     data_file.close();
 
     return true;
-}
+}*/
 
-bool OpData::saveImg(string dest_dir, string format)
+bool OpData::save(string dest_dir, string format)
 {
-    if(simple_output)
+    ofstream opstream((dest_dir + "/output.csv").c_str(), ios::out | ios::app);
+    if(!opstream.is_open())
         return false;
+
+    for(int i=0; i < fields->size(); i++)
+    {
+        opstream << fields->at(i)->second;
+        if(i < fields->size()-1)
+            opstream << ',';
+    }
+    opstream << endl;
+
+    opstream.close();
+
     string img_name = getImgName();
     string img_dir = getImgDir();
 
-    if(dest_dir == "")
-    {
-        makeDir(img_dir);
-        if(!src_img->empty())
-            imwrite(img_dir + "/" + img_name + format, *src_img);
-    }
-    else
-    {
-        makeDir(dest_dir);
-        if(!src_img->empty())
-            imwrite(dest_dir + "/" + img_name + format, *src_img);
-    }
+    for(int i=0; i<imgs->size(); i++)
+        imwrite(dest_dir + "/" + imgs->at(i)->first + format, *imgs->at(i)->second);
 
     return true;
 }
+
 
 bool OpData::saveSimple(string filename)
 {
@@ -201,7 +204,6 @@ bool OpData::saveSimple(string filename)
             opstream << ',';
     }
     opstream << endl;
-
 
     opstream.close();
     return true;

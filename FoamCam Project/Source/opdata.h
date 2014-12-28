@@ -27,15 +27,15 @@ class OpData
         bool saveSimple(string filename = "default_output.csv");
         bool saveImg(string dest_dir = "", string format = DEFAULT_OP_IMG_EXT);
 
+        string getImgName();
+        string getImgDir();
+
     private:
 
         vector<pair<string, string>*>* fields;
         vector<pair<string, Mat*>*>* imgs;
         Mat* src_img;
         string* src_img_path;
-
-        string getImgName();
-        string getImgDir();
 
         bool simple_output; //saves only the .dat file in the source image directory, does not save data images.
 

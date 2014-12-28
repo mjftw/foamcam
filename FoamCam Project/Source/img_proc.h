@@ -10,7 +10,7 @@ using namespace cv;
 #define NCOLS 2048
 
 #define SUPPORTED_IMG_FORMATS ".bmp .dib .jpeg .jpg .jpe .jp2 .png .pbm .pgm .ppm .sr .ras .tiff .tif"
-#define CAM_PARAM_XML "D:/Libaries/Uni Work/Year 3/foamcam_project/FoamCam Project/calibration/camera_calibration/calibration_data.xml"
+#define CAM_PARAM_XML "C:/Users/Merlin/Desktop/Foamcam/FoamCam Project/calibration/camera_calibration/calibration_data.xml"
 
 #define BORDER_CENT Point(1035,1115) //ellipse parameters found via trial and error
 #define BORDER_X_RADIUS 835
@@ -49,7 +49,7 @@ void showImg(string window_name, Mat& img);
 bool checkContourCorners(vector<Point>* contour);
 
 
-static bool SHOW_DEBUG_IMGS = true; //defines whether image windows should be created to show debug images
+static bool SHOW_DEBUG_IMGS = false; //defines whether image windows should be created to show debug images
 ///*TODO* Change program defaults to perhaps load from a file
 
 // ---------------- POLYS ----------------
@@ -763,7 +763,7 @@ void findSkeleton(Mat& src, Mat& dst)
     return;
 }
 
-void convertRaw(string src_path, string op_path, string format)
+/*void convertRaw(string src_path, string op_path, string format)
 {
     Mat src = imreadRaw(src_path);
     OpData output(src_path,src);
@@ -777,7 +777,7 @@ void convertRaw(string src_path, string op_path, string format)
         output.saveImg(op_path);
     }
     return;
-}
+}*/
 
 void divideIntoSubimgs(Mat& src, vector<Mat>* op, int n, int m)
 {
